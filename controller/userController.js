@@ -4,6 +4,7 @@ const { tryCatch } = require("../util/tryCatch");
 const { BadRequest, NotFound, Unauthorized } = require("../util/AppError");
 const { getDB } = require("../db/db");
 const bcrypt = require("bcrypt");
+const { ObjectId } = require("mongodb");
 
 const secert = process.env.JWT_SERECT;
 
@@ -41,15 +42,29 @@ exports.login = tryCatch(async (req, res) => {
     throw new BadRequest("Email have been already exist!");
   }
 
-  const token = generateToken(existUser);
+  const token = generateToken(existUser._id);
   existUser.token = token;
   res.status(200).json({ message: "Login Successfully", data: { existUser } });
 });
 
 exports.logout = tryCatch(async (req, res) => {
   const user = req.user;
-  console.log(user);
   res.status(200).json({ message: "Logout Successfully" });
+});
+
+exports.userDetail = tryCatch(async (req, res) => {
+  const db = getDB();
+  const userCollection = db.collection("user");
+
+  const userId = req.userId;
+
+  const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+  if (!user) {
+    throw new NotFound("User not found");
+  }
+
+  res.status(200).json({ data: user });
 });
 
 const generateToken = (userId) => {

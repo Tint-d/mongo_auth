@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/errorHandler");
 
 const postRouter = require("./routes/postRoute");
 const userRouter = require("./routes/userRoute");
+const addressRouter = require("./routes/addressRoute");
 const app = express();
 const port = 5000;
 
@@ -15,6 +16,7 @@ connectDB()
 
     app.use("/api/v1/post", postRouter);
     app.use("/api/v1/user", userRouter);
+    app.use("/api/v1/address", addressRouter);
 
     app.use(notFound);
     app.use(errorHandler);

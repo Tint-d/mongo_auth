@@ -17,7 +17,7 @@ const authenticateToken = async (req, res, next) => {
           throw new Unauthorized("Invalid Access Token!");
         }
 
-        req.user = decodedToken;
+        req.userId = decodedToken.userId;
         next();
       }
     );
